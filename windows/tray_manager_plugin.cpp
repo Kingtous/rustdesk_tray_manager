@@ -19,6 +19,8 @@
 
 #define WM_MYMESSAGE (WM_USER + 1)
 
+bool main_window_initialized = false;
+
 namespace {
 
 const flutter::EncodableValue* ValueOrNull(const flutter::EncodableMap& map,
@@ -365,7 +367,11 @@ void TrayManagerPlugin::HandleMethodCall(
 
 void TrayManagerPluginRegisterWithRegistrar(
     FlutterDesktopPluginRegistrarRef registrar) {
+  if (main_window_initialized) {
+    return;
+  }
   TrayManagerPlugin::RegisterWithRegistrar(
       flutter::PluginRegistrarManager::GetInstance()
           ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar));
+  main_window_initialized = true;
 }

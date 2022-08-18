@@ -19,6 +19,8 @@
 
 TrayManagerPlugin* plugin_instance;
 
+bool main_window_initialized = false;
+
 AppIndicator* indicator = nullptr;
 GtkWidget* menu = nullptr;
 
@@ -191,6 +193,11 @@ static void method_call_cb(FlMethodChannel* channel,
 }
 
 void tray_manager_plugin_register_with_registrar(FlPluginRegistrar* registrar) {
+  if (main_window_initialized) {
+    // multi window trick: avoid register for sub window
+    return;
+  }
+  main_window_initialized = true;
   TrayManagerPlugin* plugin = TRAY_MANAGER_PLUGIN(
       g_object_new(tray_manager_plugin_get_type(), nullptr));
 

@@ -27,14 +27,18 @@ public class TrayManagerPlugin: NSObject, FlutterPlugin, NSMenuDelegate {
     var trayIcon: TrayIcon?
     var trayMenu: TrayMenu?
     //    var statusItem: NSStatusItem = NSStatusItem();
-    
-    var _inited: Bool = false;
+    public static var mainWindowInitialized: Bool = false
     
     public static func register(with registrar: FlutterPluginRegistrar) {
+        if (mainWindowInitialized) {
+            // multi window trick
+            return;
+        }
         let channel = FlutterMethodChannel(name: "tray_manager", binaryMessenger: registrar.messenger)
         let instance = TrayManagerPlugin()
         instance.channel = channel
         registrar.addMethodCallDelegate(instance, channel: channel)
+        mainWindowInitialized = true
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
